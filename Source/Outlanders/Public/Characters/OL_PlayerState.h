@@ -49,37 +49,40 @@ class OUTLANDERS_API AOL_PlayerState : public APlayerState
 	bool bInitialized;
 
 public:
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attributes")
+		FUpgradeableParameter Health;
 	
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetCurrentHealth() const;
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetMaxHealth() const;
 
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetCurrentMana() const;
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetMaxMana() const;
 
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetMaxExperience() const;
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetCurrentExperience() const;
 
 	bool GetIsInitialized();
 
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		int32 GetUpgradePoints();
 
-	UFUNCTION(BlueprintCallable, Category = Attributes)
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		int32 GetCurrentLevel() const;
 
-	UFUNCTION(BlueprintCallable, Category = Stats)
+	UFUNCTION(BlueprintCallable, Category = "Stats")
 		int32 GetKills() const;
 
-	UFUNCTION(BlueprintCallable, Category = Stats)
+	UFUNCTION(BlueprintCallable, Category = "Stats")
 		int32 GetDeaths() const;
 
-	UFUNCTION(BlueprintCallable, Category = Stats)
+	UFUNCTION(BlueprintCallable, Category = "Stats")
 		int32 GetAssists() const;
 
 	void SetCurrentHealth(float newHealth);

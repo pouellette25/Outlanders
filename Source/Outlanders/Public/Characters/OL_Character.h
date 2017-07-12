@@ -4,7 +4,6 @@
 
 #include "GameFramework/Character.h"
 #include "OL_PlayerState.h"
-#include "PlayerStats.h"
 #include "OL_Character.generated.h"
 
 /** replicated information on a hit we've taken */
@@ -175,7 +174,7 @@ public:
 	* @param AbilityIndex The index of the ability to use.
 	*/
 	UFUNCTION(BlueprintCallable, Category = Ability)
-		void BlueprintActivateAbility(int32 AbilityIndex);
+		void BlueprintActivateAbility(int32 AbilityIndex);  // TODO: Remove
 
 	/**
 	* Activate ability
@@ -184,7 +183,7 @@ public:
 	* @param abilityIndex Index of the ability to use
 	* @param CalledFromClient Whether or not this call came from a client
 	*/
-	void ActivateAbility(int32 AbilityIndex, bool CalledFromClient = false);
+	void ActivateAbility(int32 AbilityIndex, bool CalledFromClient = false);  // TODO: Remove
 
 	/**
 	* Deactivate ability
@@ -193,15 +192,10 @@ public:
 	* @param AbilityIndex Index of the ability to deactivate
 	* @param CalledFromClient Whether or not this call came from a client
 	*/
-	void DeActivateAbility(int32 AbilityIndex, bool CalledFromClient = false);
+	void DeActivateAbility(int32 AbilityIndex, bool CalledFromClient = false);  // TODO: Remove
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Default)
-		float AmbientExpPerTick;
-
-	/** get default health */
-	/*float GetDefaultHealth() const;
-	float GetDefaultMana() const;
-	float GetDefaultExp() const;*/
+		float AmbientExpPerTick; // This should be in game mode
 
 	void ConsumeResources(AOL_Ability* Ability);
 
@@ -230,9 +224,9 @@ public:
 	void UpgradeAbilityKey3Pressed();
 	void UpgradeAbilityKey4Pressed();
 
-	void SpendUpgradePoint(int32 abilityIndex);
+	void SpendUpgradePoint(int32 abilityIndex); // move to ability manager
 
-	UFUNCTION(server, reliable, WithValidation)
+	UFUNCTION(server, reliable, WithValidation) // move to ability manager
 		void ServerSpendUpgradePoint(int32 abilityIndex);
 		bool ServerSpendUpgradePoint_Validate(int32 abilityIndex);
 		void ServerSpendUpgradePoint_Implementation(int32 abilityIndex);
@@ -251,8 +245,8 @@ public:
 	virtual bool CanDie(float KillingDamage, FDamageEvent const& DamageEvent, AController* Killer, AActor* DamageCauser) const;
 
 	FTimerHandle TimerHandle_TryGetPlayerState;
-	FTimerHandle TimerHandle_AmbientExp;
-	FTimerHandle TimerHandle_Regen;
+	FTimerHandle TimerHandle_AmbientExp; // This should be in the game mode
+	FTimerHandle TimerHandle_Regen; // This should be in the game mode
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -328,14 +322,14 @@ protected:
 		int32 CurrentActiveAbilityIndex;
 
 	UPROPERTY(EditDefaultsOnly, Category=Ability)
-		TArray<TSubclassOf<AOL_Ability>> AbilityClasses;
+		TArray<TSubclassOf<AOL_Ability>> AbilityClasses; // TODO: Remove
 
-	UFUNCTION(server, reliable, WithValidation)
+	UFUNCTION(server, reliable, WithValidation) // TODO: Remove
 		void ServerActivateAbility(int32 aIndex, bool calledFromClient = false);
 		bool ServerActivateAbility_Validate(int32 aIndex, bool calledFromClient = false);
 		void ServerActivateAbility_Implementation(int32 aIndex, bool calledFromClient = false);
 
-	UFUNCTION(server, reliable, WithValidation)
+	UFUNCTION(server, reliable, WithValidation) // TODO: Remove
 		void ServerDeActivateAbility(int32 aIndex, bool CalledFromClient = false);
 		bool ServerDeActivateAbility_Validate(int32 aIndex, bool CalledFromClient = false);
 		void ServerDeActivateAbility_Implementation(int32 aIndex, bool CalledFromClient = false);
@@ -365,7 +359,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Default)
 		float ExpReward;
-
-	UPROPERTY(EditDefaultsOnly, Instanced, Replicated, Category = Attributes)
-		UPlayerStats* PlayerStats;
 };

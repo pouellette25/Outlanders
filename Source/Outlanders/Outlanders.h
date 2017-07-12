@@ -4,9 +4,7 @@
 
 #include "Engine.h"
 #include "UnrealNetwork.h"
-#include "Characters/OL_PlayerController.h"
 #include "OutlandersTypes.h"
-#include "GameModes/OL_GameMode.h"
 
 #define COLLISION_PROJECTILE	ECC_GameTraceChannel1
 

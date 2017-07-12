@@ -15,9 +15,9 @@ void AOL_PlayerController::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
-void AOL_PlayerController::SetPlayer(UPlayer* Player)
+void AOL_PlayerController::SetPlayer(UPlayer* PlayerIn)
 {
-	Super::SetPlayer(Player);
+	Super::SetPlayer(PlayerIn);
 }
 
 void AOL_PlayerController::UnFreeze()
@@ -27,7 +27,7 @@ void AOL_PlayerController::UnFreeze()
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_Respawn, this, &AOL_PlayerController::ServerRestartPlayer, 5.f, false);
 }
 
-void AOL_PlayerController::InitializeAbilities(TArray<TSubclassOf<AOL_Ability>> AbilityClasses, APawn* Instigator, FVector Location, FRotator Rotation)
+void AOL_PlayerController::InitializeAbilities(TArray<TSubclassOf<AOL_Ability>> AbilityClasses, APawn* InstigatorIn, FVector Location, FRotator Rotation)
 {
 	UWorld* world = GetWorld();
 	int32 numAbilities = AbilityClasses.Num();
@@ -37,7 +37,7 @@ void AOL_PlayerController::InitializeAbilities(TArray<TSubclassOf<AOL_Ability>> 
 		FActorSpawnParameters SpawnInfo;
 
 		//SpawnInfo.bNoCollisionFail = true;
-		SpawnInfo.Instigator = Instigator;
+		SpawnInfo.Instigator = InstigatorIn;
 		SpawnInfo.Owner = this;
 
 		AOL_Ability* NewAbility = world->SpawnActor<AOL_Ability>(AbilityClasses[i], Location, Rotation, SpawnInfo);
@@ -48,6 +48,8 @@ void AOL_PlayerController::InitializeAbilities(TArray<TSubclassOf<AOL_Ability>> 
 		}
 	}
 }
+
+// TODO: Remove these ability functions
 
 int32 AOL_PlayerController::GetNumAbilities()
 {
@@ -89,6 +91,8 @@ void AOL_PlayerController::LevelUpAbility(int32 abilityIndex)
 		Abilities[abilityIndex]->LevelUp();
 	}
 }
+
+// end TODO: remove ability functions
 
 void AOL_PlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {

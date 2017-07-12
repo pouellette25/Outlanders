@@ -8,7 +8,7 @@ AOL_Character::AOL_Character(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
 	Mesh1P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("Mesh1P"));
-	Mesh1P->AttachTo(GetCapsuleComponent());
+	Mesh1P->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	Mesh1P->bOnlyOwnerSee = true;
 	Mesh1P->bOwnerNoSee = false;
 	Mesh1P->bReceivesDecals = false;
@@ -28,7 +28,7 @@ AOL_Character::AOL_Character(const FObjectInitializer& ObjectInitializer)
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	PlayerStats = ObjectInitializer.CreateDefaultSubobject<UPlayerStats>(this, TEXT("PlayerStats"));
+	//PlayerStats = ObjectInitializer.CreateDefaultSubobject<UPlayerStats>(this, TEXT("PlayerStats"));
 
 	ExpReward = 50;
 }
@@ -64,8 +64,8 @@ void AOL_Character::TryGetPlayerState()
 	// If the player state is valid and not initialized
 	if (OL_PlayerState)
 	{
-		AOL_GameMode* game = (AOL_GameMode*)GetWorld()->GetAuthGameMode();
-		PlayerStats->Init(OL_PlayerState, game);
+		//AOL_GameMode* game = (AOL_GameMode*)GetWorld()->GetAuthGameMode();
+		//PlayerStats->Init();
 	}
 	else // Player state wasn't valid
 	{
@@ -91,27 +91,27 @@ void AOL_Character::InitializeAbilities()
 	UWorld* world = GetWorld();
 	TArray<AOL_Ability*> Abilities;
 
-	AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
+	//AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
 
 	if (world && Role == ROLE_Authority)
 	{
-		int32 numAbilities = OL_PC->GetNumAbilities();
+		int32 numAbilities = 0;// OL_PC->GetNumAbilities();
 		if (numAbilities <= 0)
 		{ 
 			// Send the classes array to our player controller so the controller spawns the abilities
-			OL_PC->InitializeAbilities(AbilityClasses, this, GetActorLocation(), GetActorRotation());
+			//OL_PC->InitializeAbilities(AbilityClasses, this, GetActorLocation(), GetActorRotation());
 		}
 		else
 		{
 			// Abilities already exist but we have to re-assign the instigator after the character dies
 			for (int32 i = 0; i < numAbilities; i++)
 			{
-				AOL_Ability* ability = OL_PC->GetAbility(i);
+				/*AOL_Ability* ability = OL_PC->GetAbility(i);
 
 				if (ability)
 				{
 					ability->Instigator = this;
-				}
+				}*/
 			}
 		}
 	}
@@ -121,7 +121,7 @@ void AOL_Character::GiveAmbientExp()
 {
 	if (Role == ROLE_Authority && !bIsDying)
 	{
-		PlayerStats->AddExperience(AmbientExpPerTick);
+		//PlayerStats->AddExperience(AmbientExpPerTick);
 	}
 }
 
@@ -131,37 +131,37 @@ void AOL_Character::OnRegen()
 	// Make the server is handling this logic, the player state is valid, and the character isn't dead
 	if (Role == ROLE_Authority && !bIsDying)
 	{
-		PlayerStats->Regen();
+		//PlayerStats->Regen();
 	}
 }
 
 void AOL_Character::CheckLevelUp()
 {
-	if (!PlayerStats || PlayerStats->GetMaxExp() <= 0 || Role < ROLE_Authority) return;
+	//if (!PlayerStats || PlayerStats->GetMaxExp() <= 0 || Role < ROLE_Authority) return;
 
-	if (PlayerStats->GetCurrentExperience() >= PlayerStats->GetMaxExp())
-	{
-		PlayerStats->LevelUp();
-	}
+	//if (PlayerStats->GetCurrentExperience() >= PlayerStats->GetMaxExp())
+	//{
+	//	//PlayerStats->LevelUp();
+	//}
 }
 
 float AOL_Character::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
-	float currentHealth = PlayerStats->GetCurrentHealth();
+	/*float currentHealth = PlayerStats->GetCurrentHealth();
 	if (currentHealth <= 0.f)
 	{
 		return 0.f;
-	}
+	}*/
 	const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	if (ActualDamage > 0.0f)
 	{
-		PlayerStats->AddHealth(-ActualDamage);
+		//PlayerStats->AddHealth(-ActualDamage);
 
-		if (PlayerStats->GetCurrentHealth() <= 0.0f)
+		/*if (PlayerStats->GetCurrentHealth() <= 0.0f)
 		{
 			Die(ActualDamage, DamageEvent, EventInstigator, DamageCauser);
-		}
+		}*/
 	}
 
 	return Damage;
@@ -223,9 +223,9 @@ bool AOL_Character::Die(float KillingDamage, struct FDamageEvent const& DamageEv
 		return false;
 	}
 
-	float currentHealth = PlayerStats->GetCurrentHealth();
+	//float currentHealth = PlayerStats->GetCurrentHealth();
 
-	PlayerStats->SetCurrentHealth(FMath::Min(currentHealth, 0.0f));
+	//PlayerStats->SetCurrentHealth(FMath::Min(currentHealth, 0.0f));
 
 	GetCharacterMovement()->ForceReplicationUpdate();
 
@@ -258,19 +258,19 @@ void AOL_Character::OnDeath(float KillingDamage, struct FDamageEvent const& Dama
 			AOL_Character* OtherCharacter = Cast<AOL_Character>(PawnInstigator);
 			if (OtherCharacter)
 			{
-				UPlayerStats* OtherPlayerStats = OtherCharacter->PlayerStats;
+				//UPlayerStats* OtherPlayerStats = OtherCharacter->PlayerStats;
 
-				if (OtherPlayerStats)
-				{
-					// add experience
-					OtherPlayerStats->AddExperience(ExpReward);
-					// add kill
-					OtherPlayerStats->AddKill();
-				}				
+				//if (OtherPlayerStats)
+				//{
+				//	// add experience
+				//	OtherPlayerStats->AddExperience(ExpReward);
+				//	// add kill
+				//	OtherPlayerStats->AddKill();
+				//}				
 			}
 		}
 
-		PlayerStats->AddDeath();		
+		//PlayerStats->AddDeath();		
 	}
 
 	DeathMomentum = GetDeathMomentum(DamageEvent, DamageCauser);
@@ -392,22 +392,22 @@ void AOL_Character::SetRagdollPhysics()
 
 void AOL_Character::DetachAbilities()
 {
-	AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
-	if (Role < ROLE_Authority || !OL_PC)
+	//AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
+	if (Role < ROLE_Authority)// || !OL_PC)
 	{
 		return;
 	}
 
-	int32 numAbilities = OL_PC->GetNumAbilities();
+	int32 numAbilities = 0;// OL_PC->GetNumAbilities();
 	for (int32 i = 0; i < numAbilities; i++)
 	{
-		AOL_Ability* ability = OL_PC->GetAbility(i);
+		/*AOL_Ability* ability = OL_PC->GetAbility(i);
 
 		if (ability)
 		{
 			ability->Instigator = NULL;
 			ability->SetOwner(NULL);
-		}
+		}*/
 	}
 }
 
@@ -524,6 +524,7 @@ void AOL_Character::MoveRight(float Val)
 
 void AOL_Character::AbilityKey1Pressed()
 {
+	UE_LOG(LogTemp, Warning, TEXT("STuff and things"));
 	CurrentActiveAbilityIndex = 0;
 	ActivateAbility(0);
 }
@@ -545,6 +546,7 @@ void AOL_Character::AbilityKey4Pressed()
 
 void AOL_Character::UpgradeAbilityKey1Pressed()
 {
+	UE_LOG(LogTemp, Warning, TEXT("More stuff and things"));
 	SpendUpgradePoint(0);
 }
 void AOL_Character::UpgradeAbilityKey2Pressed()
@@ -569,25 +571,25 @@ void AOL_Character::SpendUpgradePoint(int32 abilityIndex)
 		return;
 	}
 
-	AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
-	int32 numAbilities = OL_PC->GetNumAbilities();
+	//AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
+	int32 numAbilities = 0;// OL_PC->GetNumAbilities();
 
-	if (!OL_PC || numAbilities == 0 || numAbilities <= abilityIndex)
+	if (numAbilities == 0 || numAbilities <= abilityIndex)
 	{
 		return;
 	}
 
 	// Get the current upgrade points from the player state
-	int32 uPoints = PlayerStats->GetUpgradePoints();
+	//int32 uPoints = PlayerStats->GetUpgradePoints();
 
 	// If there's points available, upgrade the ability and subtract point
-	if (uPoints > 0)
+	/*if (uPoints > 0)
 	{
 		OL_PC->LevelUpAbility(abilityIndex);
 		--uPoints;
 
 		PlayerStats->SetUpgradePoints(uPoints);
-	}
+	}*/
 	
 }
 
@@ -614,16 +616,16 @@ void AOL_Character::ActivateAbility(int32 AbilityIndex, bool CalledFromClient)
 		return;
 	}
 
-	AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
+	//AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
 
-	if (!OL_PC)
+	/*if (!OL_PC)
 	{
 		return;
-	}
+	}*/
 
-	AOL_Ability* ability = OL_PC->GetAbility(AbilityIndex);
+	//AOL_Ability* ability = OL_PC->GetAbility(AbilityIndex);
 
-	if (ability && ability->CanBeCast() && PlayerStats->GetCurrentMana() >= ability->ManaCost.MaxValue)
+	/*if (ability && ability->CanBeCast() && PlayerStats->GetCurrentMana() >= ability->ManaCost.MaxValue)
 	{
 		if (bIsCasting)
 		{
@@ -640,7 +642,7 @@ void AOL_Character::ActivateAbility(int32 AbilityIndex, bool CalledFromClient)
 		}
 
 		SetCasting(!bIsCasting);
-	}
+	}*/
 }
 
 bool AOL_Character::ServerActivateAbility_Validate(int32 aIndex, bool calledFromClient)
@@ -660,9 +662,9 @@ void AOL_Character::DeActivateAbility(int32 AbilityIndex, bool CalledFromClient)
 		ServerDeActivateAbility(AbilityIndex, true);
 		return;
 	}
-	AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
+	//AOL_PlayerController* OL_PC = Cast<AOL_PlayerController>(Controller);
 
-	if (!OL_PC)
+	/*if (!OL_PC)
 	{
 		return;
 	}
@@ -680,7 +682,7 @@ void AOL_Character::DeActivateAbility(int32 AbilityIndex, bool CalledFromClient)
 			ability->ToggleHidden();
 		}
 		SetCasting(!bIsCasting);
-	}
+	}*/
 }
 
 bool AOL_Character::ServerDeActivateAbility_Validate(int32 aIndex, bool CalledFromClient)
@@ -697,7 +699,7 @@ void AOL_Character::ConsumeResources(AOL_Ability* Ability)
 {
 	if (Role == ROLE_Authority && Ability)
 	{
-		PlayerStats->AddMana(-Ability->ManaCost.MaxValue);
+		//PlayerStats->AddMana(-Ability->ManaCost.MaxValue);
 	}
 }
 

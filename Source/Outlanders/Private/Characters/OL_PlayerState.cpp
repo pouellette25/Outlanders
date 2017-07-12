@@ -9,6 +9,8 @@ AOL_PlayerState::AOL_PlayerState(const FObjectInitializer& ObjectInitializer)
 	CurrentExperience = 0;
 	Level = 1;
 	NetUpdateFrequency = 5;
+
+	TRACE("Player State Created");
 }
 
 float AOL_PlayerState::GetCurrentHealth() const

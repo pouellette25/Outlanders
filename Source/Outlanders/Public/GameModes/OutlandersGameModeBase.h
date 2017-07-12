@@ -13,7 +13,9 @@ class OUTLANDERS_API AOutlandersGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
-	
+	AOutlandersGameModeBase(const FObjectInitializer& ObjectInitializer);
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Game Settings")
+		int32 InitialUpgradePoints;
 	
 };
